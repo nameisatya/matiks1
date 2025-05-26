@@ -12,7 +12,17 @@ st.title("Matiks User Behavior & Revenue Dashboard")
 uploaded_file = st.file_uploader("Upload user activity CSV", type=["csv"])
 if uploaded_file:
     df = pd.read_csv(uploaded_file)
-    df.rename(columns={"User ID": "User_ID"}, inplace=True)
+
+    # Standardize and clean column names
+    df.columns = df.columns.str.strip().str.replace(" ", "_").str.title()
+
+    # Rename known variants to match expected names
+    column_renames = {
+        "User_Id": "User_ID",
+        "Signup": "Sign_Up",
+        "Sign_Up_Date": "Sign_Up"
+    }
+    df.rename(columns=column_renames, inplace=True)
 
     # Ensure datetime columns are parsed correctly
     df["Last_Login"] = pd.to_datetime(df["Last_Login"], errors="coerce")
